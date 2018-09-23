@@ -31,7 +31,5 @@ const float pi{3.14159265358979323846f};
 float getMag(const Vector2D &vec);
 // angle between vectors in radian
 float angleVec(const Vector2D &vec1, const Vector2D &vec2);
-// heron fomula for triangle area
-float heron(const float a, const float b, const float c);
 
 #endif

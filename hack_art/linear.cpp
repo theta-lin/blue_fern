@@ -50,9 +50,3 @@ float angleVec(const Vector2D &vec1, const Vector2D &vec2)
 
 	return acos(dotProduct / (getMag(vec1) * getMag(vec2)));
 }
-
-float heron(const float a, const float b, const float c)
-{
-	float s{(a + b + c) / 2};
-	return sqrt(s * (s - a) * (s - b) * (s - c));
-}
