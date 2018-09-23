@@ -21,9 +21,15 @@
     <ClCompile Include="perlin.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="linear.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="perlin.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="linear.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

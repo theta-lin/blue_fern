@@ -2,7 +2,7 @@
 
 float Perlin::randHeight(unsigned int seed)
 {
-	std::mt19937 generator(static_cast<unsigned int>(m_master) * seed);
+	std::mt19937 generator{static_cast<unsigned int>(m_master) * seed};
 	return m_dist(generator);
 }
 
@@ -14,7 +14,7 @@ float Perlin::mix(float low, float high, float fraction)
 
 float Perlin::get(unsigned int pos)
 {
-	float i{static_cast<float>(pos / m_scale)};
+	unsigned int i{pos / m_scale};
 	float f{static_cast<float>(pos % m_scale)};
 	return mix(randHeight(i), randHeight(i + 1), f / m_scale);
 }
