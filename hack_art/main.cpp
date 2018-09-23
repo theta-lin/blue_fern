@@ -29,6 +29,27 @@ void generate(std::vector<sf::Vector2f> &terrain)
 	terrain.push_back(terrain[0]);
 }
 
+bool isInside(const sf::Vector2f &vec, std::vector<sf::Vector2f> &terrain)
+{
+	Vector2D segment{sf::Vector2f(-1.f, -1.f), vec};
+
+	int intCount(0);
+	for (size_t i{1}; i < terrain.size(); ++i)
+	{
+		Vector2D edge{terrain[i - 1], terrain[i]};
+		if (intersect(segment, edge))
+			++intCount;
+	}
+	Vector2D bottom{terrain[0], terrain[terrain.size() - 1]};
+	if (intersect(segment, bottom))
+		++intCount;
+
+	if (intCount % 2 == 1)
+		return true;
+	else
+		return false;
+}
+
 void plot(std::vector<sf::Vector2f> &terrain, std::vector<sf::Vertex> &point)
 {
 	const float maxFloat{std::numeric_limits<float>::max()};
@@ -42,36 +63,14 @@ void plot(std::vector<sf::Vector2f> &terrain, std::vector<sf::Vertex> &point)
 	}
 
 	std::mt19937 generator(static_cast<unsigned int>(time(0)));
-	std::uniform_real_distribution<float> dist{50, 900};
-	for (int i{0}; i < 10; ++i)
+	std::uniform_real_distribution<float> distX{min.x, max.x}, distY{min.y, max.y};
+	for (int i{0}; i < 10000; ++i)
 	{
-		sf::Vector2f vec1{dist(generator), dist(generator)};
-		sf::Vector2f vec2{dist(generator), dist(generator)};
-		Vector2D segment{vec1, vec2};
-
-		bool isIntersect{false};
-		for (size_t j{1}; j < terrain.size(); ++j)
-		{
-			Vector2D edge{terrain[j - 1], terrain[j]};
-			if (intersect(segment, edge))
-			{
-				isIntersect = true;
-				break;
-			}
-		}
-		Vector2D bottom{terrain[0], terrain[terrain.size() - 1]};
-		if (intersect(segment, bottom))
-			isIntersect = true;
-		if (isIntersect)
-		{
-			point.push_back(sf::Vertex(vec1, sf::Color::Red));
-			point.push_back(sf::Vertex(vec2, sf::Color::Red));
-		}
+		sf::Vector2f vec{distX(generator), distY(generator)};
+		if (isInside(vec, terrain))
+			point.push_back(sf::Vertex(vec, sf::Color::Green));
 		else
-		{
-			point.push_back(sf::Vertex(vec1, sf::Color::Green));
-			point.push_back(sf::Vertex(vec2, sf::Color::Green));
-		}
+			point.push_back(sf::Vertex(vec, sf::Color::Red));
 	}
 }
 
@@ -81,7 +80,7 @@ void draw(std::vector<sf::Vector2f> &terrain, std::vector<sf::Vertex> &point, sf
 	for (auto &vector : terrain)
 		polygon.push_back(sf::Vertex{vector, sf::Color::Magenta});
 	window.draw(polygon.data(), polygon.size(), sf::LineStrip);
-	window.draw(point.data(), point.size(), sf::Lines);
+	window.draw(point.data(), point.size(), sf::Points);
 	return;
 }
 
