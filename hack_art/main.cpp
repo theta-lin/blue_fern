@@ -7,9 +7,10 @@
 #include <limits>
 #include <iostream>
 #include <ctime>
+#include <cmath>
 
-const float count{20.f};
-const float width{50.f};
+const float count{65.f};
+const float width{15.f};
 
 void generate(std::vector<sf::Vector2f> &terrain)
 {
@@ -29,58 +30,127 @@ void generate(std::vector<sf::Vector2f> &terrain)
 	terrain.push_back(terrain[0]);
 }
 
-bool isInside(const sf::Vector2f &vec, std::vector<sf::Vector2f> &terrain)
+bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> &polygon)
 {
 	Vector2D segment{sf::Vector2f(-1.f, -1.f), vec};
 
 	int intCount(0);
-	for (size_t i{1}; i < terrain.size(); ++i)
+	for (size_t i{1}; i < polygon.size(); ++i)
 	{
-		Vector2D edge{terrain[i - 1], terrain[i]};
+		Vector2D edge{polygon[i - 1], polygon[i]};
 		if (intersect(segment, edge))
 			++intCount;
 	}
-	Vector2D bottom{terrain[0], terrain[terrain.size() - 1]};
+	Vector2D bottom{polygon[0], polygon[polygon.size() - 1]};
 	if (intersect(segment, bottom))
 		++intCount;
-
 	if (intCount % 2 == 1)
 		return true;
 	else
 		return false;
 }
 
-void plot(std::vector<sf::Vector2f> &terrain, std::vector<sf::Vertex> &point)
+float getScore(const Vector2D e1, const Vector2D e2, const Vector2D e3, const Vector2D e4)
 {
-	const float maxFloat{std::numeric_limits<float>::max()};
-	sf::Vector2f min{maxFloat, maxFloat}, max{0.f, 0.f};
-	for (auto &vector : terrain)
-	{
-		min.x = std::min(min.x, vector.x);
-		min.y = std::min(min.y, vector.y);
-		max.x = std::max(max.x, vector.x);
-		max.y = std::max(max.y, vector.y);
-	}
-
-	std::mt19937 generator(static_cast<unsigned int>(time(0)));
-	std::uniform_real_distribution<float> distX{min.x, max.x}, distY{min.y, max.y};
-	for (int i{0}; i < 10000; ++i)
-	{
-		sf::Vector2f vec{distX(generator), distY(generator)};
-		if (isInside(vec, terrain))
-			point.push_back(sf::Vertex(vec, sf::Color::Green));
-		else
-			point.push_back(sf::Vertex(vec, sf::Color::Red));
-	}
+	const float perfectAngle{pi * 2 / 3};
+	float angle1(angleVec(e1, e2)), angle2(angleVec(e2, e3)), angle3(angleVec(e3, e4));
+	float avg((angle1 + angle2 + angle3) / 3);
+	float diff1(std::abs(angle1 - avg) + std::abs(angle2 - avg) + std::abs(angle3 - avg));
+	float diff2(std::abs(angleVec(e1, e4) - perfectAngle));
+	return diff1 + diff2 * 5;
 }
 
-void draw(std::vector<sf::Vector2f> &terrain, std::vector<sf::Vertex> &point, sf::RenderWindow &window)
+void divide(std::vector<std::vector<sf::Vector2f> > &terrain)
 {
-	std::vector<sf::Vertex> polygon;
-	for (auto &vector : terrain)
-		polygon.push_back(sf::Vertex{vector, sf::Color::Magenta});
-	window.draw(polygon.data(), polygon.size(), sf::LineStrip);
-	window.draw(point.data(), point.size(), sf::Points);
+	const float maxFloat{std::numeric_limits<float>::max()};
+	const float maxArea{5000.f};
+	const int maxIteration{50};
+
+	bool done;
+	do
+	{
+		done = true;
+		for (size_t i(0); i < terrain.size(); ++i)
+		{
+			sf::Vector2f min{maxFloat, maxFloat}, max{0.f, 0.f};
+			for (auto &vector : terrain[i])
+			{
+				min.x = std::min(min.x, vector.x);
+				min.y = std::min(min.y, vector.y);
+				max.x = std::max(max.x, vector.x);
+				max.y = std::max(max.y, vector.y);
+			}
+
+			std::mt19937 generator(static_cast<unsigned int>(time(0)));
+			std::uniform_real_distribution<float> distX{min.x, max.x}, distY{min.y, max.y};
+
+			if (terrain[i].size() > 3)
+			{ 
+				done = false;
+				// p0 is a random point inside the polygon
+				sf::Vector2f p0;
+
+				float minScore{maxFloat};
+				int count{0};
+				bool can;
+				do
+				{
+					sf::Vector2f p0New{distX(generator), distY(generator)};
+					can = isPointInside(p0New, terrain[i]);
+					if (can)
+					{
+						++count;
+						// edges to the first 4 vertices of the polygon
+						Vector2D p0p1 = {p0New, terrain[i][0]};
+						Vector2D p0p2 = {p0New, terrain[i][1]};
+						Vector2D p0p3 = {p0New, terrain[i][2]};
+						Vector2D p0p4 = {p0New, terrain[i][3]};
+						float score{getScore(p0p1, p0p2, p0p3, p0p4)};
+						if (score < minScore)
+						{
+							minScore = score;
+							p0 = p0New;
+						}
+					}
+
+				}
+				while (!can || count < maxIteration);
+
+				// create triangle p0p1p2, p0p2p3, p0p3p4
+				std::vector<sf::Vector2f> p0p1p2{p0, terrain[i][0], terrain[i][1]};
+				terrain.push_back(p0p1p2);
+				std::vector<sf::Vector2f> p0p2p3{p0, terrain[i][1], terrain[i][2]};
+				terrain.push_back(p0p2p3);
+				std::vector<sf::Vector2f> p3p4p5{p0, terrain[i][2], terrain[i][3]};
+				terrain.push_back(p3p4p5);
+
+				//remaining polygon would be ... p1 p0 p4 ...
+				terrain[i][1] = p0; // p2 = p0
+				terrain[i].erase(terrain[i].begin() + 2); //erase p3
+			}
+		}
+	}
+	while (!done);
+}
+
+void draw(std::vector<std::vector<sf::Vector2f> > &triangle, sf::RenderWindow &window)
+{
+	int fill{0};
+	for (auto &vertex : triangle)
+	{
+		sf::ConvexShape shape{3};
+		shape.setPoint(0, vertex[0]);
+		shape.setPoint(1, vertex[1]);
+		shape.setPoint(2, vertex[2]);
+		if (fill == 0)
+			shape.setFillColor(sf::Color::Red);
+		else if (fill == 1)
+			shape.setFillColor(sf::Color::Yellow);
+		else
+			shape.setFillColor(sf::Color::Blue);
+		fill = (fill + 1) % 3;
+		window.draw(shape);
+	}
 	return;
 }
 
@@ -90,10 +160,10 @@ int main()
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(1280, 1024), "hack_art", sf::Style::Default, settings);
 	
-	std::vector<sf::Vector2f> terrain;
-	generate(terrain);
-	std::vector<sf::Vertex> point;
-	plot(terrain, point);
+	std::vector<std::vector<sf::Vector2f> > terrain;
+	terrain.resize(1);
+	generate(terrain[0]);
+	divide(terrain);
 
 	while (window.isOpen())
 	{
@@ -105,7 +175,7 @@ int main()
 		}
 
 		window.clear(sf::Color::Black);
-		draw(terrain, point, window);
+		draw(terrain, window);
 		window.display();
 	}
 	return 0;

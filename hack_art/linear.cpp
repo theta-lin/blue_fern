@@ -33,3 +33,26 @@ bool intersect(const Vector2D &vec1, const Vector2D &vec2)
 	else
 		return false;
 }
+
+float getMag(const Vector2D &vec)
+{
+	return sqrt(  (vec.p2.x - vec.p1.x) * (vec.p2.x - vec.p1.x)
+		        + (vec.p2.y - vec.p1.y) * (vec.p2.y - vec.p1.y));
+}
+
+float angleVec(const Vector2D &vec1, const Vector2D &vec2)
+{
+	float dx1{vec1.p2.x - vec1.p1.x};
+	float dy1{vec1.p2.y - vec1.p1.y};
+	float dx2{vec2.p2.x - vec2.p1.x};
+	float dy2{vec2.p2.y - vec2.p1.y};
+	float dotProduct{dx1 * dx2 + dy1 * dy2};
+
+	return acos(dotProduct / (getMag(vec1) * getMag(vec2)));
+}
+
+float heron(const float a, const float b, const float c)
+{
+	float s{(a + b + c) / 2};
+	return sqrt(s * (s - a) * (s - b) * (s - c));
+}
