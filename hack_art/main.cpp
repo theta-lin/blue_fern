@@ -160,26 +160,37 @@ void divide(std::vector<std::vector<sf::Vector2f> > &terrain)
 	while (!done);
 }
 
+sf::Color getColor(const sf::ConvexShape &shape)
+{
+	static time_t master{time(0)};
+	std::uniform_real_distribution<float> dist{32, 255};
+
+	const unsigned int prime{100003};
+	float sum{0.f};
+	for (int v(0); v < 3; ++v)
+	{
+		sf::Vector2f point{shape.getPoint(v)};
+		std::mt19937 generator{static_cast<unsigned int>(master) * (static_cast<unsigned int>(point.x) + static_cast<unsigned int>(point.y) * prime)};
+		sum += dist(generator);
+	}
+	sf::Color color{0, static_cast<sf::Uint8>(sum / 3.f), 0};
+	return color;
+}
+
 void draw(std::vector<std::vector<sf::Vector2f> > &triangle, sf::RenderWindow &window)
 {
-	int fill{0};
 	for (auto &vertex : triangle)
 	{
 		sf::ConvexShape shape{3};
 		shape.setPoint(0, vertex[0]);
 		shape.setPoint(1, vertex[1]);
 		shape.setPoint(2, vertex[2]);
-		if (fill == 0)
-			shape.setFillColor(sf::Color::Red);
-		else if (fill == 1)
-			shape.setFillColor(sf::Color::Yellow);
-		else
-			shape.setFillColor(sf::Color::Blue);
-		fill = (fill + 1) % 3;
+		shape.setFillColor(getColor(shape));
 		window.draw(shape);
 	}
 
-	/*Perlin2D perlin{50, 0, 255};
+	/*
+	Perlin2D perlin{50, 0, 255};
 	std::vector<sf::Vertex> point;
 	for (float x{0.f}; x < 200.f; ++x)
 	{
@@ -191,7 +202,8 @@ void draw(std::vector<std::vector<sf::Vector2f> > &triangle, sf::RenderWindow &w
 			point.push_back({vector, color});
 		}
 	}
-	window.draw(point.data(), point.size(), sf::Points);*/
+	window.draw(point.data(), point.size(), sf::Points);
+	*/
 
 	return;
 }
