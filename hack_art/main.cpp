@@ -10,12 +10,12 @@
 #include <cmath>
 
 const float count{35.f};
-const float width{30.f};
+const float width{35.f};
+const float xOrigin{50.f}, yOrigin{1000.f}, ground{30};
 
 void generate(std::vector<sf::Vector2f> &terrain)
 {
 	Perlin perlin{150, 100, 600};
-	const float xOrigin{50.f}, yOrigin{1000.f}, ground{30};
 
 	sf::Vector2f begin{xOrigin, yOrigin - ground};
 	terrain.push_back(begin);
@@ -52,7 +52,7 @@ bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> &pol
 
 bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> &polygon)
 {
-	const int maxIntersect{3};
+	const int maxIntersect{1};
 	int intCount{0};
 	for (size_t i{1}; i < polygon.size(); ++i)
 	{
@@ -63,7 +63,7 @@ bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> &po
 	Vector2D bottom{polygon[0], polygon[polygon.size() - 1]};
 	if (intersect(segment, bottom))
 		++intCount;
-	return intCount < maxIntersect;
+	return intCount <= maxIntersect;
 }
 
 float getScore(const Vector2D e1, const Vector2D e2, const Vector2D e3, const Vector2D e4)
@@ -77,15 +77,11 @@ float getScore(const Vector2D e1, const Vector2D e2, const Vector2D e3, const Ve
 	return diff1 + diff2 * influence2;
 }
 
-std::vector<std::vector<sf::Vector2f> > divide(std::vector<sf::Vector2f> &terrain)
+const float maxFloat{std::numeric_limits<float>::max()};
+
+void dividePolygon(std::vector<std::vector<sf::Vector2f> > &triangles)
 {
-	const float maxFloat{std::numeric_limits<float>::max()};
-	const float maxArea{5000.f};
 	const int maxIteration{20};
-
-	std::vector<std::vector<sf::Vector2f> > triangles;
-	triangles.push_back(terrain);
-
 	std::mt19937 generator(static_cast<unsigned int>(time(0)));
 	while (triangles[0].size() > 3)
 	{
@@ -98,17 +94,18 @@ std::vector<std::vector<sf::Vector2f> > divide(std::vector<sf::Vector2f> &terrai
 			max.y = std::max(max.y, triangles[0][j].y);
 		}
 
-		std::uniform_real_distribution<float> distX{min.x, max.x}, distY{min.y, max.y};
 		std::uniform_int_distribution<size_t> distOffset{0, 3};
 		size_t offset{distOffset(generator)};
-		sf::Vector2f p0{triangles[0][offset]};
-		sf::Vector2f p1{triangles[0][(offset + 1) % triangles[0].size()]};
-		sf::Vector2f p2{triangles[0][(offset + 2) % triangles[0].size()]};
-		sf::Vector2f p3{triangles[0][(offset + 3) % triangles[0].size()]};
+		const sf::Vector2f &p0{triangles[0][offset]};
+		const sf::Vector2f &p1{triangles[0][(offset + 1) % triangles[0].size()]};
+		const sf::Vector2f &p2{triangles[0][(offset + 2) % triangles[0].size()]};
+		const sf::Vector2f &p3{triangles[0][(offset + 3) % triangles[0].size()]};
 
 		// p is a random point inside the polygon
 		sf::Vector2f p;
 		float minScore{maxFloat};
+		std::uniform_real_distribution<float> distX{min.x, max.x}, distY{min.y, max.y};
+
 		int count{0};
 		bool can;
 		do
@@ -124,11 +121,11 @@ std::vector<std::vector<sf::Vector2f> > divide(std::vector<sf::Vector2f> &terrai
 
 			if (can)
 			{
-				can =    can
-						&& isSegmentInside(pp0, triangles[0])
-						&& isSegmentInside(pp1, triangles[0])
-					  	&& isSegmentInside(pp2, triangles[0])
-						&& isSegmentInside(pp3, triangles[0]);
+				can = can
+					&& isSegmentInside(pp0, triangles[0])
+					&& isSegmentInside(pp1, triangles[0])
+					&& isSegmentInside(pp2, triangles[0])
+					&& isSegmentInside(pp3, triangles[0]);
 			}
 
 			if (can)
@@ -141,8 +138,7 @@ std::vector<std::vector<sf::Vector2f> > divide(std::vector<sf::Vector2f> &terrai
 					p = pNew;
 				}
 			}
-		}
-		while (!can || count < maxIteration);
+		} while (!can || count < maxIteration);
 
 		// create triangle pp0p1, pp1p2, pp2p3
 		std::vector<sf::Vector2f> pp0p1{p, p0, p1};
@@ -156,25 +152,128 @@ std::vector<std::vector<sf::Vector2f> > divide(std::vector<sf::Vector2f> &terrai
 		triangles[0][(offset + 1) % triangles[0].size()] = p; // p1 = p
 		triangles[0].erase(triangles[0].begin() + (offset + 2) % triangles[0].size()); //erase p2
 	}
+}
 
+void divideTriangles(std::vector<std::vector<sf::Vector2f> > &triangles)
+{
+	const float maxEdge{50.f};
+
+	for (size_t i{0}; i < triangles.size(); ++i)
+	{
+		sf::Vector2f *p0{nullptr};
+		sf::Vector2f *p1{nullptr};
+		sf::Vector2f *p2{nullptr};
+
+		//find the longest edge of the triangle (oppositing p0)
+		for (size_t offset{0}; offset < 3; ++offset)
+		{
+			sf::Vector2f *p0New{&triangles[i][offset]};
+			sf::Vector2f *p1New{&triangles[i][(offset + 1) % 3]};
+			sf::Vector2f *p2New{&triangles[i][(offset + 2) % 3]};
+			if (!p0 || getMag({*p1New, *p2New}) > getMag({*p1, *p2}))
+			{
+				p0 = p0New;
+				p1 = p1New;
+				p2 = p2New;
+			}
+		}
+			
+		//if that edge is too long, connect p0 with its midpoint
+		if (getMag({*p1, *p2}) > maxEdge)
+		{
+			sf::Vector2f mid = {(p1->x + p2->x) / 2, (p1->y + p2->y) / 2};
+			triangles.insert(triangles.begin() + i + 1, {*p0, mid, *p2});
+			*p2 = mid;
+		}
+	}
+
+}
+
+std::vector<std::vector<sf::Vector2f> > divide(const std::vector<sf::Vector2f> &polygon)
+{
+	std::vector<std::vector<sf::Vector2f> > triangles;
+	triangles.push_back(polygon);
+	dividePolygon(triangles);
+	divideTriangles(triangles);
 	return triangles;
+}
+
+sf::Color colorMix(const sf::Color &a, const sf::Color &b, const float ratio)
+{
+	return {
+				static_cast<sf::Uint8>(a.r + (b.r - a.r) * ratio),
+				static_cast<sf::Uint8>(a.g + (b.g - a.g) * ratio),
+				static_cast<sf::Uint8>(a.b + (b.b - a.b) * ratio)
+	       };
+}
+
+sf::Color colorTempHumid(float temp, float humid)
+{
+	temp = std::min(temp, 1.f);
+	temp = std::max(temp, -1.f);
+	humid = std::min(humid, 1.f);
+	humid = std::max(humid, 0.f);
+
+	const sf::Color hotDry   {255, 0,   0  };
+	const sf::Color warmDry  {255, 255, 0  };
+	const sf::Color coldDry  {180, 220, 255};
+	const sf::Color hotHumid {0,   128, 0  };
+	const sf::Color warmHumid{0,   255, 0  };
+	const sf::Color coldHumid{100, 255, 255};
+
+	sf::Color warmMix{colorMix(warmDry, warmHumid, humid)};
+	sf::Color extremeMix;
+	if (temp > 0.f)
+		extremeMix = colorMix(hotDry, hotHumid, humid);
+	else
+		extremeMix = colorMix(coldDry, coldHumid, humid);
+
+	return colorMix(warmMix, extremeMix, std::abs(temp));
 }
 
 sf::Color getColor(const sf::ConvexShape &shape)
 {
+	const float temp{1.f};
+	const float humid{1.f};
+	const float delta{-0.004f};
 	static time_t master{time(0)};
-	std::uniform_real_distribution<float> dist{32, 255};
 
 	const unsigned int prime{100003};
-	float sum{0.f};
+	float rTotal{0}, gTotal{0}, bTotal{0};
 	for (int v(0); v < 3; ++v)
 	{
 		sf::Vector2f point{shape.getPoint(v)};
+		float tempNow{temp + (yOrigin - ground - point.y) * delta};
+
+		sf::Color base{colorTempHumid(tempNow, humid)};
+		rTotal += static_cast<float>(base.r);
+		gTotal += static_cast<float>(base.g);
+		bTotal += static_cast<float>(base.b);
 		std::mt19937 generator{static_cast<unsigned int>(master) * (static_cast<unsigned int>(point.x) + static_cast<unsigned int>(point.y) * prime)};
-		sum += dist(generator);
+		std::uniform_real_distribution<float> dist{-50.f, 50.f};
+		//std::cout << rTotal << ' ' << randOffset << '\n';
+		//system("pause");
+		float randOffset{dist(generator)};
+		rTotal += randOffset;
+		gTotal += randOffset;
+		bTotal += randOffset;
 	}
-	sf::Color color{0, static_cast<sf::Uint8>(sum / 3.f), 0};
-	return color;
+
+	rTotal = std::min(rTotal, 3.f * 255.f);
+	gTotal = std::min(gTotal, 3.f * 255.f);
+	bTotal = std::min(bTotal, 3.f * 255.f);
+	rTotal = std::max(rTotal, 0.f);
+	gTotal = std::max(gTotal, 0.f);
+	bTotal = std::max(bTotal, 0.f);
+
+	//std::cout << static_cast<int>((rTotal + 10) / 3.f) << ' ' << static_cast<int>((gTotal) / 3.f) << ' ' << static_cast<int>((bTotal) / 3.f) << std::endl;
+	//system("pause");
+
+	return {
+				static_cast<sf::Uint8>((rTotal) / 3.f),
+				static_cast<sf::Uint8>((gTotal) / 3.f),
+				static_cast<sf::Uint8>((bTotal) / 3.f)
+	       };
 }
 
 void draw(std::vector<std::vector<sf::Vector2f> > &triangle, sf::RenderWindow &window)
@@ -185,7 +284,10 @@ void draw(std::vector<std::vector<sf::Vector2f> > &triangle, sf::RenderWindow &w
 		shape.setPoint(0, vertex[0]);
 		shape.setPoint(1, vertex[1]);
 		shape.setPoint(2, vertex[2]);
-		shape.setFillColor(getColor(shape));
+		sf::Color www = getColor(shape);
+		//std::cout << int(www.r) << ' ' << int(www.g) << ' ' << int(www.b) << std::endl;
+		//system("pause");
+		shape.setFillColor(www);
 		window.draw(shape);
 	}
 
@@ -210,7 +312,7 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-
+		
 		window.clear(sf::Color::Black);
 		draw(triangles, window);
 		window.display();
