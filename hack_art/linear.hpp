@@ -32,4 +32,11 @@ float getMag(const Vector2D &vec);
 // angle between vectors in radian
 float angleVec(const Vector2D &vec1, const Vector2D &vec2);
 
+//check if a point is inside a polygon
+bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> polygon);
+//check if a segment is inside or outside a polygon
+bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> polygon, const int maxIntersect);
+
+const unsigned int prime{100003};
+
 #endif

@@ -129,10 +129,15 @@
     <ClCompile Include="linear.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="perlin.cpp" />
+    <ClCompile Include="terrain.cpp" />
+    <ClCompile Include="triangle_array.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linear.hpp" />
+    <ClInclude Include="object.hpp" />
     <ClInclude Include="perlin.hpp" />
+    <ClInclude Include="terrain.hpp" />
+    <ClInclude Include="triangle_array.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,12 +24,27 @@
     <ClCompile Include="linear.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="triangle_array.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="perlin.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="linear.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle_array.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="object.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

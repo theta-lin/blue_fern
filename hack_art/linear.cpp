@@ -50,3 +50,42 @@ float angleVec(const Vector2D &vec1, const Vector2D &vec2)
 
 	return acos(dotProduct / (getMag(vec1) * getMag(vec2)));
 }
+
+bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> polygon)
+{
+	Vector2D segment{sf::Vector2f(-1.f, -1.f), vec};
+
+	int intCount(0);
+	for (size_t i{1}; i < polygon.size(); ++i)
+	{
+		Vector2D edge{polygon[i - 1], polygon[i]};
+		if (intersect(segment, edge))
+			++intCount;
+	}
+
+	Vector2D bottom{polygon[0], polygon[polygon.size() - 1]};
+	if (intersect(segment, bottom))
+		++intCount;
+
+	if (intCount % 2 == 1)
+		return true;
+	else
+		return false;
+}
+
+bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> polygon, const int maxIntersect)
+{
+	int intCount{0};
+	for (size_t i{1}; i < polygon.size(); ++i)
+	{
+		Vector2D edge{polygon[i - 1], polygon[i]};
+		if (intersect(segment, edge))
+			++intCount;
+	}
+
+	Vector2D bottom{polygon[0], polygon[polygon.size() - 1]};
+	if (intersect(segment, bottom))
+		++intCount;
+
+	return intCount <= maxIntersect;
+}
