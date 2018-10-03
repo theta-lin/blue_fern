@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="linear.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="perlin.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle_array.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="linear.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="object.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="perlin.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle_array.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="源代码">
+      <UniqueIdentifier>{d1b4714a-d7a2-4760-9ae4-8649fd4a0382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{c210eab7-675c-4c8e-88fc-f7b4e0203b04}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
