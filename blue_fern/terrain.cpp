@@ -26,7 +26,7 @@ sf::Color Terrain::colorTempHumid(float temp, float humid)
 	return colorMix(warmMix, extremeMix, std::abs(temp));
 }
 
-sf::Color Terrain::getColor(const sf::ConvexShape &shape)
+sf::Color Terrain::getColor(const std::vector<sf::Vector2f> &shape)
 {
 	float temp;
 	get("temp") >> temp;
@@ -39,9 +39,8 @@ sf::Color Terrain::getColor(const sf::ConvexShape &shape)
 	std::uniform_int_distribution<int> dist{-colorOffset, colorOffset};
 	float screenHeight;
 	get("screenHeight") >> screenHeight;
-	for (int v(0); v < 3; ++v)
+	for (auto &point : shape)
 	{
-		sf::Vector2f point{shape.getPoint(v)};
 		float tempNow{temp + (screenHeight - point.y) * heightDelta};
 
 		sf::Color base{colorTempHumid(tempNow, humid)};
@@ -147,5 +146,13 @@ void Terrain::generate()
 
 	dividePolygon();
 	divideTriangles();
+
+	for (auto &triangle : polygon)
+	{
+		sf::Color color{getColor(triangle)};
+		for (auto &vertex : triangle)
+			vertices.push_back({vertex, color});
+	}
+
 	canDraw = true;
 }

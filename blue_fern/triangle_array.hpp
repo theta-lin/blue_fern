@@ -25,11 +25,12 @@ class TriangleArray : public Object
 protected:
 	const float maxFloat{std::numeric_limits<float>::max()};
 	std::vector<std::vector<sf::Vector2f> > polygon;
+	std::vector<sf::Vertex> vertices;
 	
 	float getScore(const Vector2D e1, const Vector2D e2, const Vector2D e3, const Vector2D e4);
 	void dividePolygon();
 	void divideTriangles();
-	virtual sf::Color getColor(const sf::ConvexShape &shape) = 0;
+	virtual sf::Color getColor(const std::vector<sf::Vector2f> &shape) = 0;
 
 	bool check() override;
 

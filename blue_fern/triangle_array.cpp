@@ -138,18 +138,7 @@ void TriangleArray::divideTriangles()
 void TriangleArray::draw(sf::RenderTarget &target)
 {
 	if (canDraw)
-	{
-		for (auto &vertex : polygon)
-		{
-			sf::ConvexShape shape{3};
-			shape.setPoint(0, vertex[0]);
-			shape.setPoint(1, vertex[1]);
-			shape.setPoint(2, vertex[2]);
-
-			shape.setFillColor(getColor(shape));
-			target.draw(shape);
-		}
-	}
+			target.draw(vertices.data(), vertices.size(), sf::Triangles);
 }
 
 bool TriangleArray::check()

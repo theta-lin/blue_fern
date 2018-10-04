@@ -31,7 +31,7 @@ private:
 
 	sf::Color colorMix(const sf::Color &a, const sf::Color &b, const float ratio);
 	sf::Color colorTempHumid(float temp, float humid);
-	sf::Color getColor(const sf::ConvexShape &shape);
+	sf::Color getColor(const std::vector<sf::Vector2f> &shape) override;
 
 	bool check() override;
 
@@ -43,7 +43,7 @@ public:
 		        hotHumid {0,   80 , 0  },
 	        	warmHumid{0,   255, 0  },
 		        coldHumid{100, 255, 255},
-				heightDelta{-0.002f},
+				heightDelta{-0.0015f},
 		        colorOffset{50},
 		        perlinScale{150.f}
 	{

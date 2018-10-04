@@ -7,10 +7,10 @@ int main()
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(1280, 1024), "hack_art", sf::Style::Default, settings);
 	Terrain terrain;
-	terrain.set("temp", "0");
-	terrain.set("humid", "0.5");
+	terrain.set("temp", "0.5");
+	terrain.set("humid", "0.1");
 	terrain.set("minHeight", "200");
-	terrain.set("maxHeight", "800");
+	terrain.set("maxHeight", "1000");
 	terrain.set("screenWidth", "1280");
 	terrain.set("screenHeight", "1024");
 	terrain.set("dotCount", "40");
