@@ -137,8 +137,9 @@ void TriangleArray::divideTriangles()
 
 void TriangleArray::draw(sf::RenderTarget &target)
 {
+	std::lock_guard<std::mutex> guard{mutex};
 	if (canDraw)
-			target.draw(vertices.data(), vertices.size(), sf::Triangles);
+		target.draw(vertices.data(), vertices.size(), sf::Triangles);
 }
 
 bool TriangleArray::check()
@@ -175,4 +176,11 @@ bool TriangleArray::check()
 	}
 
 	return true;
+}
+
+void TriangleArray::clear()
+{
+	polygon.clear();
+	vertices.clear();
+	polygon.resize(1);
 }

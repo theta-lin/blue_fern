@@ -115,8 +115,11 @@ bool Terrain::check()
 
 void Terrain::generate()
 {
+	std::lock_guard<std::mutex> guard{mutex};
 	if (!check())
 		return;
+
+	clear();
 
 	float minHeight;
 	get("minHeight") >> minHeight;

@@ -33,12 +33,10 @@ protected:
 	virtual sf::Color getColor(const std::vector<sf::Vector2f> &shape) = 0;
 
 	bool check() override;
+	void clear() final;
 
 public:
-	TriangleArray() : Object()
-	{
-		polygon.resize(1);
-	}
+	using Object::Object;
 	void draw(sf::RenderTarget &target) final;
 };
 

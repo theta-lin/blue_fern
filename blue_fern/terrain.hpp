@@ -4,7 +4,7 @@
 #include "triangle_array.hpp"
 #include "perlin.hpp"
 
-class Terrain : public TriangleArray
+class Terrain final : public TriangleArray
 {
 
 	/*
@@ -54,7 +54,9 @@ public:
 		set("maxIntersect", "2");
 		set("maxEdge", "50");
 	}
-	void generate() override;
+
+	void generate() final;
+	std::unique_ptr<Object> clone() final { return std::make_unique<Terrain>(*this); }
 };
 
 #endif
