@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cloud.cpp" />
     <ClCompile Include="linear.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="perlin.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="triangle_array.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cloud.hpp" />
     <ClInclude Include="linear.hpp" />
     <ClInclude Include="object.hpp" />
     <ClInclude Include="perlin.hpp" />

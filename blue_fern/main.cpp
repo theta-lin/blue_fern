@@ -1,4 +1,6 @@
 #include "terrain.hpp"
+#include "cloud.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -9,6 +11,9 @@
 #include <functional>
 #include <thread>
 #include <mutex>
+
+const unsigned int screenWidth{1280};
+const unsigned int screenHeight{1024};
 
 bool g_end{false};
 std::mutex g_mutexEnd;
@@ -25,11 +30,22 @@ void add(const std::string &name, const std::string &type)
 	}
 	else
 	{
-		g_id.push_back(name);
 		if (type == "terrain")
+		{
 			g_queue.push_back(std::make_unique<Terrain>());
+			g_queue.back()->set("screenWidth", std::to_string(screenWidth));
+			g_queue.back()->set("screenHeight", std::to_string(screenHeight));
+			g_id.push_back(name);
+		}
+		else if (type == "cloud")
+		{
+			g_queue.push_back(std::make_unique<Cloud>());
+			g_id.push_back(name);
+		}
 		else
+		{
 			std::cerr << "Undefined object!" << std::endl;
+		}
 	}
 }
 
@@ -299,7 +315,7 @@ int main()
 {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window{sf::VideoMode(1280, 1024), "blue_fern", sf::Style::Titlebar, settings};
+	sf::RenderWindow window{sf::VideoMode(screenWidth, screenHeight), "blue_fern", sf::Style::Titlebar, settings};
 	window.setActive(false);
 
 	std::thread controlThread{control, std::ref(window)};

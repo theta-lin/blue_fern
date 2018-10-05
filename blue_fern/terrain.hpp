@@ -15,7 +15,6 @@ class Terrain final : public TriangleArray
 	 * maxHeight
 	 * screenWidth
 	 * screenHeight
-	 * dotCount
 	 */
 
 private:
@@ -28,12 +27,13 @@ private:
 	const float heightDelta;
 	const int colorOffset;
 	const float perlinScale;
+	const float dotCount;
 
 	sf::Color colorMix(const sf::Color &a, const sf::Color &b, const float ratio);
 	sf::Color colorTempHumid(float temp, float humid);
-	sf::Color getColor(const std::vector<sf::Vector2f> &shape) override;
+	sf::Color getColor(const std::vector<sf::Vector2f> &shape) final;
 
-	bool check() override;
+	bool check() final;
 
 public:
 	Terrain() : TriangleArray(),
@@ -41,11 +41,12 @@ public:
 		        warmDry  {255, 255, 0  },
 		        coldDry  {180, 220, 255},
 		        hotHumid {0,   80 , 0  },
-	        	warmHumid{0,   255, 0  },
-		        coldHumid{100, 255, 255},
+	        	warmHumid{0,   220, 0  },
+		        coldHumid{150, 250, 255},
 				heightDelta{-0.0015f},
 		        colorOffset{50},
-		        perlinScale{150.f}
+		        perlinScale{150.f},
+		        dotCount{50.f}
 	{
 		set("perfectAngle", "0.8");
 		set("influence1", "1");

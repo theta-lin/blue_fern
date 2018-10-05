@@ -16,6 +16,9 @@
     <ClCompile Include="triangle_array.cpp">
       <Filter>源代码</Filter>
     </ClCompile>
+    <ClCompile Include="cloud.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linear.hpp">
@@ -31,6 +34,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="terrain.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cloud.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

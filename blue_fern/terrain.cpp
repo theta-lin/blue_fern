@@ -104,11 +104,6 @@ bool Terrain::check()
 		std::cerr << "variable \"screenHeight\" not set" << std::endl;
 		return false;
 	}
-	if (!db.count("dotCount"))
-	{
-		std::cerr << "variable \"dotCount\" not set" << std::endl;
-		return false;
-	}
 
 	return true;
 }
@@ -131,16 +126,14 @@ void Terrain::generate()
 	get("screenWidth") >> screenWidth;
 	float screenHeight;
 	get("screenHeight") >> screenHeight;
-	float dotCount;
-	get("dotCount") >> dotCount;
 	float width{screenWidth / dotCount};
 
 	sf::Vector2f begin{0.f, screenHeight};
 	polygon[0].push_back(begin);
 	for (float x{0}; x <= dotCount; ++x)
 	{
-		sf::Vector2f vector{x * width, screenHeight - perlin.get(x * width)};
-		polygon[0].push_back(vector);
+		sf::Vector2f vertex{x * width, screenHeight - perlin.get(x * width)};
+		polygon[0].push_back(vertex);
 	}
 
 	sf::Vector2f end{dotCount * width, screenHeight};
