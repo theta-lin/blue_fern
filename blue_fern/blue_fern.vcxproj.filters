@@ -16,7 +16,16 @@
     <ClCompile Include="triangle_array.cpp">
       <Filter>源代码</Filter>
     </ClCompile>
+    <ClCompile Include="water.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="blob.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
     <ClCompile Include="cloud.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
+    <ClCompile Include="ice.cpp">
       <Filter>源代码</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,7 +45,16 @@
     <ClInclude Include="terrain.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="water.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="blob.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="cloud.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ice.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

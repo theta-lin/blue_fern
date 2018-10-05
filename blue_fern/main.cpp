@@ -1,5 +1,7 @@
 #include "terrain.hpp"
 #include "cloud.hpp"
+#include "water.hpp"
+#include "ice.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -40,6 +42,16 @@ void add(const std::string &name, const std::string &type)
 		else if (type == "cloud")
 		{
 			g_queue.push_back(std::make_unique<Cloud>());
+			g_id.push_back(name);
+		}
+		else if (type == "water")
+		{
+			g_queue.push_back(std::make_unique<Water>());
+			g_id.push_back(name);
+		}
+		else if (type == "ice")
+		{
+			g_queue.push_back(std::make_unique<Ice>());
 			g_id.push_back(name);
 		}
 		else

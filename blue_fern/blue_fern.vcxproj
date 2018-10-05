@@ -134,20 +134,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="blob.cpp" />
     <ClCompile Include="cloud.cpp" />
+    <ClCompile Include="ice.cpp" />
     <ClCompile Include="linear.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="perlin.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="triangle_array.cpp" />
+    <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="blob.hpp" />
     <ClInclude Include="cloud.hpp" />
+    <ClInclude Include="ice.hpp" />
     <ClInclude Include="linear.hpp" />
     <ClInclude Include="object.hpp" />
     <ClInclude Include="perlin.hpp" />
     <ClInclude Include="terrain.hpp" />
     <ClInclude Include="triangle_array.hpp" />
+    <ClInclude Include="water.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
