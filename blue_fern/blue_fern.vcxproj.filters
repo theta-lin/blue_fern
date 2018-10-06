@@ -28,6 +28,9 @@
     <ClCompile Include="ice.cpp">
       <Filter>源代码</Filter>
     </ClCompile>
+    <ClCompile Include="l_system.cpp">
+      <Filter>源代码</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linear.hpp">
@@ -55,6 +58,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ice.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="l_system.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fern.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

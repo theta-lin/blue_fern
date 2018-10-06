@@ -13,12 +13,13 @@ class Object
 protected:
 	std::map<std::string, std::string> db;
 	std::mutex mutex;
+	bool canUpdate;
 	bool canDraw;
 	virtual bool check() = 0;
 	virtual void clear() = 0;
 
 public:
-	Object() : canDraw{false}
+	Object() : canUpdate{false}, canDraw{false}
 	{
 	}
 
@@ -28,6 +29,10 @@ public:
 
 	void set(const std::string &key, const std::string &value) { db[key] = value; }
 	std::istringstream get(const std::string &key) { return std::istringstream{db[key]}; }
+
+	virtual void update()
+	{
+	}
 	virtual void generate() = 0;
 	virtual void draw(sf::RenderTarget &target) = 0;
 	virtual std::unique_ptr<Object> clone() = 0;

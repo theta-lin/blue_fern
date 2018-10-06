@@ -1,5 +1,5 @@
-#ifndef ICE_CPP
-#define ICE_CPP
+#ifndef ICE_HPP
+#define ICE_HPP
 
 #include "blob.hpp"
 

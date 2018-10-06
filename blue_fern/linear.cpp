@@ -36,8 +36,7 @@ bool intersect(const Vector2D &vec1, const Vector2D &vec2)
 
 float getMag(const Vector2D &vec)
 {
-	return sqrt(  (vec.p2.x - vec.p1.x) * (vec.p2.x - vec.p1.x)
-		        + (vec.p2.y - vec.p1.y) * (vec.p2.y - vec.p1.y));
+	return std::hypot(vec.p2.x - vec.p1.x, vec.p2.y - vec.p1.y);
 }
 
 float angleVec(const Vector2D &vec1, const Vector2D &vec2)
@@ -48,10 +47,10 @@ float angleVec(const Vector2D &vec1, const Vector2D &vec2)
 	float dy2{vec2.p2.y - vec2.p1.y};
 	float dotProduct{dx1 * dx2 + dy1 * dy2};
 
-	return acos(dotProduct / (getMag(vec1) * getMag(vec2)));
+	return std::acos(dotProduct / (getMag(vec1) * getMag(vec2)));
 }
 
-bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> polygon)
+bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> &polygon)
 {
 	Vector2D segment{sf::Vector2f(-1.f, -1.f), vec};
 
@@ -73,7 +72,7 @@ bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> poly
 		return false;
 }
 
-bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> polygon, const int maxIntersect)
+bool isSegmentInside(const Vector2D &segment, const std::vector<sf::Vector2f> &polygon, const int maxIntersect)
 {
 	int intCount{0};
 	for (size_t i{1}; i < polygon.size(); ++i)
@@ -88,4 +87,12 @@ bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> pol
 		++intCount;
 
 	return intCount <= maxIntersect;
+}
+
+sf::Vector2f move(const sf::Vector2f &origin, float dist, float angle)
+{
+	sf::Vector2f pos;
+	pos.x = origin.x + dist * std::cos(angle);
+	pos.y = origin.y + dist * std::sin(angle);
+	return pos;
 }

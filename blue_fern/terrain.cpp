@@ -108,9 +108,26 @@ bool Terrain::check()
 	return true;
 }
 
-void Terrain::generate()
+void Terrain::update()
 {
 	std::lock_guard<std::mutex> guard{mutex};
+
+	if (canUpdate)
+	{
+		for (auto &triangle : polygon)
+		{
+			sf::Color color{getColor(triangle)};
+			for (auto &vertex : triangle)
+				vertices.push_back({vertex, color});
+		}
+
+		canDraw = true;
+	}
+}
+
+void Terrain::generate()
+{
+	mutex.lock();
 	if (!check())
 		return;
 
@@ -143,12 +160,8 @@ void Terrain::generate()
 	dividePolygon();
 	divideTriangles();
 
-	for (auto &triangle : polygon)
-	{
-		sf::Color color{getColor(triangle)};
-		for (auto &vertex : triangle)
-			vertices.push_back({vertex, color});
-	}
+	canUpdate = true;
+	mutex.unlock();
 
-	canDraw = true;
+	update();
 }

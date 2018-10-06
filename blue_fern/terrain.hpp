@@ -56,6 +56,7 @@ public:
 		set("maxEdge", "50");
 	}
 
+	void update() final;
 	void generate() final;
 	std::unique_ptr<Object> clone() final { return std::make_unique<Terrain>(*this); }
 };

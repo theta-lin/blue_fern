@@ -2,6 +2,8 @@
 #include "cloud.hpp"
 #include "water.hpp"
 #include "ice.hpp"
+#include "l_system.hpp"
+#include "fern.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -52,6 +54,16 @@ void add(const std::string &name, const std::string &type)
 		else if (type == "ice")
 		{
 			g_queue.push_back(std::make_unique<Ice>());
+			g_id.push_back(name);
+		}
+		else if (type == "l_system")
+		{
+			g_queue.push_back(std::make_unique<LSystem>());
+			g_id.push_back(name);
+		}
+		else if (type == "fern")
+		{
+			g_queue.push_back(std::make_unique<Fern>());
 			g_id.push_back(name);
 		}
 		else
@@ -117,6 +129,26 @@ void generate(const std::string &name)
 		std::cerr << "Object not found" << std::endl;
 	else
 		g_queue[index]->generate();
+}
+
+void update(const std::string &name)
+{
+	size_t index;
+	bool found{false};
+	for (size_t i{0}; i < g_id.size(); ++i)
+	{
+		if (g_id[i] == name)
+		{
+			index = i;
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+		std::cerr << "Object not found" << std::endl;
+	else
+		g_queue[index]->update();
 }
 
 void down(const std::string &name)
@@ -284,6 +316,17 @@ void control(sf::RenderWindow &window)
 					generate(name);
 				}
 			}
+			else if (command == "update")
+			{
+				if (name.empty())
+				{
+					std::cerr << "Name not set!" << std::endl;
+				}
+				else
+				{
+					update(name);
+				}
+			}
 			else if (command == "down")
 			{
 				if (name.empty())
@@ -328,7 +371,6 @@ int main()
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window{sf::VideoMode(screenWidth, screenHeight), "blue_fern", sf::Style::Titlebar, settings};
-	window.setActive(false);
 
 	std::thread controlThread{control, std::ref(window)};
 

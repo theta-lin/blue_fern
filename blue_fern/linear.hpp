@@ -33,9 +33,11 @@ float getMag(const Vector2D &vec);
 float angleVec(const Vector2D &vec1, const Vector2D &vec2);
 
 //check if a point is inside a polygon
-bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> polygon);
+bool isPointInside(const sf::Vector2f &vec, const std::vector<sf::Vector2f> &polygon);
 //check if a segment is inside or outside a polygon
-bool isSegmentInside(const Vector2D segment, const std::vector<sf::Vector2f> polygon, const int maxIntersect);
+bool isSegmentInside(const Vector2D &segment, const std::vector<sf::Vector2f> &polygon, const int maxIntersect);
+
+sf::Vector2f move(const sf::Vector2f &origin, float dist, float angle);
 
 const unsigned int prime{100003};
 
