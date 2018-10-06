@@ -2,8 +2,9 @@
 #include "cloud.hpp"
 #include "water.hpp"
 #include "ice.hpp"
-#include "l_system.hpp"
 #include "fern.hpp"
+#include "tree.hpp"
+#include "red_tree.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -56,14 +57,19 @@ void add(const std::string &name, const std::string &type)
 			g_queue.push_back(std::make_unique<Ice>());
 			g_id.push_back(name);
 		}
-		else if (type == "l_system")
-		{
-			g_queue.push_back(std::make_unique<LSystem>());
-			g_id.push_back(name);
-		}
 		else if (type == "fern")
 		{
 			g_queue.push_back(std::make_unique<Fern>());
+			g_id.push_back(name);
+		}
+		else if (type == "tree")
+		{
+			g_queue.push_back(std::make_unique<Tree>());
+			g_id.push_back(name);
+		}
+		else if (type == "red_tree")
+		{
+			g_queue.push_back(std::make_unique<RedTree>());
 			g_id.push_back(name);
 		}
 		else

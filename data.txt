@@ -29,26 +29,16 @@ set w1 xLen 300
 set w1 yLen 100
 gen w1
 
-	const std::string init{"X"};
-	const std::string ruleX{"F[--FX][-FX][+FX][++FX]"};
-	const std::string ruleF{"FF"};
-	const int iteration{4};
-	const float branchRatio{0.999f};
+add lol fern
+set lol color blue
+set lol initX 500
+set lol initY 500
+gen lol
 
-	const float turnAngle{pi / 8.f};
-	const sf::Vector2f initPos{500.f, 1000.f};
-	const float initAngle{-pi / 2.f};
-	const float initLen{15.f};
-
-
-const std::string init{"X"};
-const std::string ruleX{"F[[-X]]F[+X]F[X]"};
-const std::string ruleF{"FF"};
-const int iteration{13};
-const float branchRatio{0.99999999999f};
-const float turnRatio{0.999999f};
-
-const float turnAngle{pi / 3.5f};
-const sf::Vector2f initPos{500.f, 1000.f};
-const float initAngle{-pi / 2.f};
-const float initLen{0.03f};
+add lol tree
+set lol initX 500
+set lol initY 500
+set lol init X
+set lol ruleX F[--FX][-FX][+FX][++FX]
+set lol ruleF FF
+gen lol

@@ -66,6 +66,12 @@
     <ClInclude Include="fern.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="tree.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="red_tree.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="源代码">

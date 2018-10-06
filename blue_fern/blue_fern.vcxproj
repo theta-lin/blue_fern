@@ -154,7 +154,9 @@
     <ClInclude Include="l_system.hpp" />
     <ClInclude Include="object.hpp" />
     <ClInclude Include="perlin.hpp" />
+    <ClInclude Include="red_tree.hpp" />
     <ClInclude Include="terrain.hpp" />
+    <ClInclude Include="tree.hpp" />
     <ClInclude Include="triangle_array.hpp" />
     <ClInclude Include="water.hpp" />
   </ItemGroup>
