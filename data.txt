@@ -39,6 +39,26 @@ add lol tree
 set lol initX 500
 set lol initY 500
 set lol init X
-set lol ruleX F[--FX][-FX][+FX][++FX]
+set lol ruleX F[--FX][-FX][FX][+FX][++FX]
 set lol ruleF FF
+gen lol
+
+set lol ruleX F[FX]F[-FX][+FX]F[++FX]
+set lol ruleF FF
+
+set lol ruleX F[-FX][--FX]+F[FX]--F[X]
+set lol ruleF FF
+
+set lol ruleX F[-X][++FX]--FFX++FFX
+set lol ruleF FF
+
+set lol ruleX F[--FX][+FXX]--FFX++FX
+set lol ruleF FF
+
+set lol ruleX --[FX]++++[FX]--[FX]
+
+add lol red_tree
+set lol initX 500
+set lol initY 500
+set lol iteration 5
 gen lol

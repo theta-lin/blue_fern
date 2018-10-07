@@ -141,6 +141,7 @@
     <ClCompile Include="l_system.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="perlin.cpp" />
+    <ClCompile Include="snow.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="triangle_array.cpp" />
     <ClCompile Include="water.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="object.hpp" />
     <ClInclude Include="perlin.hpp" />
     <ClInclude Include="red_tree.hpp" />
+    <ClInclude Include="snow.hpp" />
     <ClInclude Include="terrain.hpp" />
     <ClInclude Include="tree.hpp" />
     <ClInclude Include="triangle_array.hpp" />

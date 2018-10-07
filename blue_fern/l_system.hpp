@@ -79,6 +79,14 @@ public:
 
 	void generate() override;
 	void draw(sf::RenderTarget &target) final;
+	bool hasShadow() final { return true; }
+	sf::Vector2f getPos() final
+	{
+		sf::Vector2f pos;
+		get("initX") >> pos.x;
+		get("initY") >> pos.y;
+		return pos;
+	}
 	std::unique_ptr<Object> clone() override { return std::make_unique<LSystem>(*this); }
 };
 

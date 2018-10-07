@@ -24,7 +24,7 @@ private:
 		{
 			std::string color;
 			get("color") >> color;
-			if (color != "green" && color != "blue")
+			if (color != "green" && color != "blue" && color != "yellow")
 			{
 				std::cerr << "variable \"color\" wrong value" << std::endl;
 				return false;
@@ -79,11 +79,20 @@ public:
 			set("gLeaf", "80");
 			set("bLeaf", "255");
 		}
+		else if (color == "yellow")
+		{
+			set("rTrunk", "255");
+			set("gTrunk", "220");
+			set("bTrunk", "0");
+			set("rLeaf", "255");
+			set("gLeaf", "220");
+			set("bLeaf", "0");
+		}
 		
 		LSystem::generate();
 	}
 
-	std::unique_ptr<Object> clone() override { return std::make_unique<Fern>(*this); }
+	std::unique_ptr<Object> clone() final { return std::make_unique<Fern>(*this); }
 };
 
 #endif

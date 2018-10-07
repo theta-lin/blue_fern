@@ -15,6 +15,8 @@ protected:
 	std::mutex mutex;
 	bool canUpdate;
 	bool canDraw;
+
+private:
 	virtual bool check() = 0;
 	virtual void clear() = 0;
 
@@ -35,6 +37,8 @@ public:
 	}
 	virtual void generate() = 0;
 	virtual void draw(sf::RenderTarget &target) = 0;
+	virtual bool hasShadow() = 0;
+	virtual sf::Vector2f getPos() { return {0.f,0.f}; }
 	virtual std::unique_ptr<Object> clone() = 0;
 };
 

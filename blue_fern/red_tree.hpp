@@ -18,7 +18,7 @@ public:
 		set("branchRatio", "0.995");
 		set("turnAngle", "0.1");
 		set("widthRatio", "10");
-		set("widthDelta", "0.93");
+		set("widthDelta", "0.975");
 
 		set("initAngle", "-0.5");
 		set("initLen", "6");
@@ -45,7 +45,7 @@ public:
 
 	using LSystem::generate;
 
-	std::unique_ptr<Object> clone() override { return std::make_unique<RedTree>(*this); }
+	std::unique_ptr<Object> clone() final { return std::make_unique<RedTree>(*this); }
 };
 
 #endif

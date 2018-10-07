@@ -37,6 +37,7 @@ protected:
 
 public:
 	using Object::Object;
+	bool hasShadow() final { return false; }
 	void draw(sf::RenderTarget &target) final;
 };
 

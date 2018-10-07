@@ -31,6 +31,7 @@
     <ClCompile Include="l_system.cpp">
       <Filter>源代码</Filter>
     </ClCompile>
+    <ClCompile Include="snow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linear.hpp">
@@ -70,6 +71,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="red_tree.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="snow.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -57,8 +57,8 @@ void LSystem::dump(const Vector2D &segment, char symbol, float width)
 	else if (shape == "quad")
 	{
 		float angle{std::atan2(segment.p1.y - segment.p2.y, segment.p1.x - segment.p2.x)};
-		float angle1{angle - pi / 4.f};
-		float angle2{angle + pi / 4.f};
+		float angle1{angle - pi / 2.f};
+		float angle2{angle + pi / 2.f};
 		float dist{width / 2.f};
 		sf::Vector2f a{segment.p1}, b{segment.p1};
 		sf::Vector2f c{segment.p2}, d{segment.p2};
@@ -66,9 +66,6 @@ void LSystem::dump(const Vector2D &segment, char symbol, float width)
 		b = move(b, dist, angle2);
 		c = move(c, dist, angle2);
 		d = move(d, dist, angle1);
-		//std::cout << a.x << ',' << a.y << ' ' << b.x << ',' << b.y << std::endl;
-		//std::cout << c.x << ',' << c.y << ' ' << d.x << ',' << d.y << std::endl;
-		//system("pause");
 		quads.push_back({a, color});
 		quads.push_back({b, color});
 		quads.push_back({c, color});
@@ -101,6 +98,11 @@ bool LSystem::check()
 	if (!db.count("ruleF"))
 	{
 		std::cerr << "variable \"ruleF\" not set" << std::endl;
+		return false;
+	}
+	if (!db.count("iteration"))
+	{
+		std::cerr << "variable \"iteration\" not set" << std::endl;
 		return false;
 	}
 	if (!db.count("branchRatio"))

@@ -5,6 +5,9 @@
 #include "fern.hpp"
 #include "tree.hpp"
 #include "red_tree.hpp"
+#include "snow.hpp"
+
+#include "linear.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -17,15 +20,23 @@
 #include <thread>
 #include <mutex>
 
-const unsigned int screenWidth{1280};
-const unsigned int screenHeight{1024};
+const unsigned int screenWidth{1920};
+const unsigned int screenHeight{1080};
+const sf::Color shadowColor{100, 100, 100, 220};
+const float shadowOffset{5.f};
+const float sunRadius{30.f};
 
 bool g_end{false};
 std::mutex g_mutexEnd;
 
+sf::Color g_skyColor{0, 150, 230};
+sf::Vector2f g_sunPos{-100.f, -100.f};
 std::vector<std::unique_ptr<Object> > g_queue;
 std::vector<std::string> g_id;
 std::mutex g_mutexObject;
+
+sf::RenderTexture g_screen;
+std::mutex g_mutexScreen;
 
 void add(const std::string &name, const std::string &type)
 {
@@ -70,6 +81,11 @@ void add(const std::string &name, const std::string &type)
 		else if (type == "red_tree")
 		{
 			g_queue.push_back(std::make_unique<RedTree>());
+			g_id.push_back(name);
+		}
+		else if (type == "snow")
+		{
+			g_queue.push_back(std::make_unique<Snow>());
 			g_id.push_back(name);
 		}
 		else
@@ -246,6 +262,27 @@ void control(sf::RenderWindow &window)
 				std::cout << id << ' ';
 			std::cout << std::endl;
 		}
+		else if (command == "sky")
+		{
+			int r, g, b;
+			stream >> r >> g >> b;
+			g_skyColor.r = static_cast<sf::Uint8>(r);
+			g_skyColor.g = static_cast<sf::Uint8>(g);
+			g_skyColor.b = static_cast<sf::Uint8>(b);
+		}
+		else if (command == "sun")
+		{
+			stream >> g_sunPos.x >> g_sunPos.y;
+		}
+		else if (command == "save")
+		{
+			std::string file;
+			stream >> file;
+			if (file.empty())
+				std::cerr << "No file name!" << std::endl;
+			else
+				g_screen.getTexture().copyToImage().saveToFile(file);
+		}
 		else
 		{
 			std::string name;
@@ -376,9 +413,12 @@ int main()
 {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window{sf::VideoMode(screenWidth, screenHeight), "blue_fern", sf::Style::Titlebar, settings};
+	sf::RenderWindow window{sf::VideoMode{screenWidth, screenHeight}, "blue_fern", sf::Style::Titlebar, settings};
 
 	std::thread controlThread{control, std::ref(window)};
+
+	if (!g_screen.create(screenWidth, screenHeight, settings))
+		return 1;
 
 	while (true)
 	{
@@ -394,16 +434,53 @@ int main()
 		}
 		else
 		{
+			g_mutexScreen.lock();
+			g_screen.clear(sf::Color::Black);
+
+			g_mutexObject.lock();
+			sf::RectangleShape sky{sf::Vector2f{static_cast<float>(screenWidth), static_cast<float>(screenHeight)}};
+			sky.setFillColor(g_skyColor);
+			g_screen.draw(sky);
+			sf::CircleShape sun{sunRadius};
+			sun.setPosition(g_sunPos);
+			sun.setFillColor(sf::Color{255,255,255});
+			g_screen.draw(sun);
+
+			for (auto &object : g_queue)
+			{
+				sf::RenderTexture render;
+				if (render.create(screenWidth, screenHeight, settings))
+				{
+					render.clear(sf::Color{0, 0, 0, 0});
+					object->draw(render);
+					render.display();
+
+					const sf::Texture &texture{render.getTexture()};
+					if (object->hasShadow())
+					{
+						sf::Sprite shadow{texture};
+						shadow.setColor(shadowColor);
+						sf::Vector2f pos{object->getPos()};
+						shadow.move(move({0, 0}, shadowOffset, std::atan2(pos.y - g_sunPos.y, pos.x - g_sunPos.x)));
+						g_screen.draw(shadow);
+					}
+
+					sf::Sprite shape{texture};
+					g_screen.draw(shape);
+				}
+			}
+			g_mutexObject.unlock();
+
+			g_screen.display();
+			const sf::Texture &texture{g_screen.getTexture()};
+			sf::Sprite screen{texture};
+			
 			sf::Event event;
 			while (window.pollEvent(event))
 				;
 			window.clear(sf::Color::Black);
-
-			g_mutexObject.lock();
-			for (auto &object : g_queue)
-				object->draw(window);
-			g_mutexObject.unlock();
-
+			window.draw(screen);
+			g_mutexScreen.unlock();
 			window.display();
 		}
 	}

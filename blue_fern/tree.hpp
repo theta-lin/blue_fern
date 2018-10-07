@@ -13,6 +13,7 @@ class Tree : public LSystem
 	 * ruleX (inherit / optional)
 	 * ruleF (inherit / optional)
 	 * variation (optional)
+	 * dry (0 or 1, optional)
 	 */
 
 public:
@@ -31,11 +32,6 @@ public:
 		set("rTrunk", "100");
 		set("gTrunk", "50");
 		set("bTrunk", "0");
-
-		set("leafShape", "circle");
-		set("rLeaf", "0");
-		set("gLeaf", "190");
-		set("bLeaf", "0");
 
 		set("fruitChance", "0");
 	}
@@ -89,10 +85,37 @@ public:
 			}
 		}
 
+		if (db.count("dry"))
+		{
+			int dry;
+			get("dry") >> dry;
+			if (dry == 1)
+			{
+				set("leafShape", "quad");
+				set("rLeaf", "100");
+				set("gLeaf", "80");
+				set("bLeaf", "0");
+			}
+			else
+			{
+				set("leafShape", "circle");
+				set("rLeaf", "0");
+				set("gLeaf", "190");
+				set("bLeaf", "0");
+			}
+		}
+		else
+		{
+			set("leafShape", "circle");
+			set("rLeaf", "0");
+			set("gLeaf", "190");
+			set("bLeaf", "0");
+		}
+
 		LSystem::generate();
 	}
 
-	std::unique_ptr<Object> clone() override { return std::make_unique<Tree>(*this); }
+	std::unique_ptr<Object> clone() final { return std::make_unique<Tree>(*this); }
 };
 
 #endif
