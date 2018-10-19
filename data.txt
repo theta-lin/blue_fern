@@ -1,11 +1,10 @@
 add bkg terrain
 set bkg temp 0.5
-set bkg humid 0.1
-set bkg minHeight 200
-set bkg maxHeight 1000
-set bkg screenWidth 1280
-set bkg screenHeight 1024
-set bkg dotCount 40
+set bkg humid 1
+set bkg minHeight 50
+set bkg maxHeight 600
+set bkg screenWidth 1920
+set bkg screenHeight 1080
 
 add c1 cloud
 set c1 xOrigin 500
@@ -33,14 +32,24 @@ add lol fern
 set lol color blue
 set lol initX 500
 set lol initY 500
-gen lol
+
+
+add s snow
+set s xOrigin 500
+set s yOrigin 500
+gen s
+add bkg terrain
+set bkg temp 0.5
+set bkg humid 0.1
+set bkg minHeight 200
+set bkg maxHeight 1000
+set bkg screenWidth 1920
+set bkg screenHeight 1080
+gen bkg
+down bkg
 
 add lol tree
-set lol initX 500
-set lol initY 500
-set lol init X
-set lol ruleX F[--FX][-FX][FX][+FX][++FX]
-set lol ruleF FF
+set lol variation 0
 gen lol
 
 set lol ruleX F[FX]F[-FX][+FX]F[++FX]
